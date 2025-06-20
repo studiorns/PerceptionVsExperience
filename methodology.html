@@ -446,6 +446,15 @@
             margin-bottom: 16px;
         }
         
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        
         .cta-button {
             display: inline-flex;
             align-items: center;
@@ -457,7 +466,7 @@
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
-            margin-top: 16px;
+            margin: 0;
         }
         
         .cta-button:hover {
@@ -836,10 +845,16 @@
         <div class="cta-section">
             <h3>Ready to Explore the Results?</h3>
             <p>Now that you understand our methodology, explore the interactive spider chart to see where Abu Dhabi's reality differs from market perceptions.</p>
-            <a href="index.html" class="cta-button">
-                <i class="fas fa-chart-radar"></i>
-                View Results Dashboard
-            </a>
+            <div class="cta-buttons">
+                <a href="index.html" class="cta-button">
+                    <i class="fas fa-chart-radar"></i>
+                    View Results Dashboard
+                </a>
+                <a href="insights.html" class="cta-button">
+                    <i class="fas fa-lightbulb"></i>
+                    View Strategic Insights
+                </a>
+            </div>
         </div>
     </div>
     

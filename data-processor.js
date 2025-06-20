@@ -395,3 +395,97 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
     window.PerceptionRealityProcessor = PerceptionRealityProcessor;
 }
+
+// Initialize and expose processed data globally for validation
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof window !== 'undefined' && !window.perceptionRealityData) {
+        // Sample data for validation
+        const sampleRecommendationCsv = `REASONS FOR RECOMMENDING BY NATIONALITY,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,
+,Bahrain,Belgium,Canada,China,Egypt,France,Germany,India,Italy,Kazakhstan,Kuwait,Malaysia,Netherlands,Oman,Poland,Qatar,Russia,Saudi Arabia,South Korea,Spain,United Kingdom,UNITED STATES
+Is a safe destination,81%,85%,84%,84%,94%,91%,89%,81%,91%,86%,82%,93%,92%,82%,82%,90%,92%,87%,90%,86%,91%,89%
+The Grand Mosque is great to see/visit,50%,60%,64%,77%,82%,74%,67%,62%,73%,83%,40%,80%,63%,59%,68%,61%,66%,63%,88%,70%,69%,69%
+Is a very modern place,70%,59%,64%,56%,85%,66%,62%,66%,65%,76%,68%,80%,60%,64%,72%,71%,60%,80%,81%,70%,62%,66%
+Is a place of culture,49%,51%,67%,71%,76%,66%,51%,58%,70%,78%,57%,67%,67%,65%,64%,60%,57%,71%,81%,62%,67%,68%
+Yas Island is amazing,79%,45%,52%,51%,83%,47%,45%,67%,51%,48%,80%,57%,54%,76%,62%,69%,49%,82%,55%,55%,66%,60%
+Has great architecture,36%,49%,60%,59%,76%,59%,53%,60%,58%,61%,54%,65%,57%,59%,54%,64%,56%,68%,82%,63%,58%,58%
+Is a strong blend of the traditional and the new,50%,49%,53%,54%,74%,62%,56%,54%,52%,61%,58%,62%,46%,61%,51%,63%,50%,70%,69%,64%,57%,53%
+Has many interesting things to see and do,57%,53%,56%,49%,69%,59%,52%,59%,55%,69%,58%,60%,47%,59%,61%,57%,51%,61%,68%,58%,56%,53%
+Has many attractions for the whole family,64%,47%,47%,45%,71%,54%,45%,60%,50%,68%,66%,59%,53%,65%,46%,56%,48%,75%,70%,56%,58%,52%
+Has many cultural attractions,42%,50%,41%,53%,64%,54%,47%,50%,56%,62%,48%,68%,43%,54%,47%,55%,44%,60%,66%,47%,51%,52%
+Has friendly and welcoming people,46%,35%,49%,46%,44%,51%,50%,51%,54%,50%,47%,47%,46%,41%,52%,44%,42%,55%,53%,50%,50%,53%
+Has amazing hotels/places to stay,64%,32%,40%,36%,65%,48%,38%,46%,41%,60%,56%,68%,49%,54%,34%,66%,39%,66%,55%,46%,45%,41%
+Warner Bros is great to visit,61%,35%,40%,41%,59%,36%,29%,47%,37%,32%,70%,33%,31%,66%,40%,59%,29%,72%,42%,38%,44%,45%
+Amazing beaches/beach activities,45%,38%,36%,28%,73%,39%,38%,38%,35%,64%,48%,69%,36%,56%,31%,63%,40%,54%,45%,38%,40%,31%
+Louvre Abu Dhabi is great to see/visit,23%,35%,38%,38%,44%,53%,34%,26%,50%,29%,24%,64%,30%,34%,29%,38%,39%,41%,43%,37%,43%,35%
+Has great weather during the winter,18%,31%,49%,36%,32%,35%,39%,26%,42%,19%,30%,8%,34%,34%,14%,33%,40%,44%,4%,37%,38%,31%
+Is open and tolerant to visitors,36%,26%,31%,27%,34%,30%,31%,30%,32%,35%,32%,37%,24%,27%,32%,34%,29%,32%,43%,29%,33%,27%
+Is great for shopping,29%,22%,27%,19%,39%,26%,24%,27%,30%,42%,25%,27%,20%,35%,23%,34%,19%,37%,35%,27%,25%,24%
+Offers great food choices,26%,20%,19%,17%,67%,17%,16%,19%,16%,47%,26%,54%,16%,39%,23%,35%,12%,26%,35%,21%,20%,19%
+It offers good value for money,24%,17%,19%,15%,29%,25%,19%,20%,24%,32%,31%,20%,16%,32%,15%,25%,20%,31%,29%,21%,21%,18%
+Offers great desert experiences,20%,21%,20%,10%,36%,22%,22%,13%,19%,19%,24%,24%,16%,32%,13%,26%,21%,34%,8%,21%,23%,20%
+Ferrari World is great to visit,35%,14%,19%,12%,16%,16%,16%,22%,20%,14%,31%,11%,16%,25%,16%,25%,20%,31%,17%,19%,23%,18%
+It is affordable,14%,14%,24%,16%,20%,17%,19%,18%,17%,12%,23%,28%,14%,24%,22%,19%,19%,26%,22%,20%,22%,18%
+Has beautiful mangroves,28%,8%,18%,10%,28%,16%,12%,12%,21%,4%,21%,7%,6%,25%,12%,28%,16%,34%,3%,18%,21%,17%
+Has great nightlife,7%,10%,10%,4%,18%,11%,6%,9%,9%,4%,10%,7%,4%,9%,8%,11%,8%,15%,7%,12%,10%,9%`;
+
+        const sampleTopOfMindCsv = `Attribute,Frequency
+Grand Mosque,2090
+Arabian traditions/culture,1846
+Yas Island is amazing,1199
+Great place,994
+Beautiful sites/attractions,983
+Luxury,932
+Ferrari World,917
+Modern city,830
+Quiet/Peaceful city,815
+Clean city,612
+Great hospitality/welcoming/generous,583
+Nice holiday/experience,571
+Safe place,553
+Beautiful city,519
+Family-friendly/for all ages,499
+Amazing theme parks,457
+Nothing/Irrelevant,424
+Beautiful tall buildings/architecture,411
+Capital of UAE,374
+Great infrastructure,369
+Rich city,347
+Extreme weather,334
+Good for Business/job opportunities,323
+Family residents/relatives/friends,310
+Lots to do/see,288
+Adventure/Fun,249
+Desert experiences,243
+Nice resorts/Hotels/restaurants,227
+Great beaches,201
+Wellbeing/Comfort,186
+Warner Brothers,179
+Big city,173
+Very Organised,167
+Developed city/innovative,135
+Diversity of people/Cosmopolitan,128
+Great weather,117
+Formula 1,104
+Museums,101
+Sunshine/sun,97
+Great shopping,94
+Transit hub,88
+The Louvre,85
+Expensive,79
+Malls,79
+Beautiful view of the gulf/great views,77
+Fast rising/growing economy,77`;
+
+        const processor = new PerceptionRealityProcessor();
+        const processedData = processor.processAllData(sampleRecommendationCsv, sampleTopOfMindCsv);
+        
+        // Convert to array format for validation
+        window.perceptionRealityData = Object.keys(processedData.scores).map(theme => ({
+            theme: theme,
+            reality: processedData.scores[theme].reality,
+            perception: processedData.scores[theme].perception,
+            gap: processedData.scores[theme].gap
+        }));
+    }
+});
