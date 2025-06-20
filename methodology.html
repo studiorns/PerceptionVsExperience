@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perception vs Reality Analysis - Methodology</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* SONER Logo Animation */
+        @keyframes sonerScan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes sonerBlip { 0%, 20%, 100% { opacity: 0; } 2%, 15% { opacity: 1; } 3% { transform: scale(1.2); } }
+        
+        /* SONER Logo styles */
+        .soner-logo { display: flex; align-items: center; color: white; font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 300; }
+        .soner-radar { width: 24px; height: 24px; border-radius: 50%; border: 1px solid white; margin: 0 3px; position: relative; background-color: rgba(255, 255, 255, 0.05); overflow: hidden; }
+        .soner-scanner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; animation: sonerScan 4s linear infinite; transform-origin: center; }
+        .soner-scanner::before { content: ''; position: absolute; top: 0; left: 50%; width: 50%; height: 50%; background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)); transform-origin: bottom left; clip-path: polygon(0 0, 100% 0, 0 100%); }
+        .soner-scanner::after { content: ''; position: absolute; top: 0; left: 50%; width: 50%; height: 1px; background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 1)); transform-origin: left center; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); }
+        .soner-blip { position: absolute; width: 2px; height: 2px; background-color: white; border-radius: 50%; opacity: 0; box-shadow: 0 0 4px white; }
+        .soner-blip:nth-child(1) { top: 25%; left: 30%; animation: sonerBlip 4s 1s infinite; }
+        .soner-blip:nth-child(2) { top: 65%; left: 60%; animation: sonerBlip 4s 2.5s infinite; }
+        .soner-tagline { color: white; font-size: 8px; text-transform: uppercase; font-weight: 500; letter-spacing: 0.5em; margin-left: 10px; opacity: 0.8; }
+
+        :root {
+            --primary: #4285f4;
+            --primary-light: #1a2233;
+            --primary-dark: #8ab4f8;
+            --secondary: #34a853;
+            --secondary-light: #1a2a1e;
+            --warning: #fbbc04;
+            --warning-light: #332a1a;
+            --danger: #ea4335;
+            --danger-light: #331f1e;
+            --gray-100: #1e1e1e;
+            --gray-200: #2d2d2d;
+            --gray-300: #3d3d3d;
+            --gray-400: #4d4d4d;
+            --gray-500: #777777;
+            --gray-600: #a0a0a0;
+            --gray-700: #c0c0c0;
+            --gray-800: #e0e0e0;
+            --gray-900: #f0f0f0;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 15px 25px rgba(0, 0, 0, 0.6);
+            --radius-sm: 4px;
+            --radius: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s ease;
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --section-bg: #181818;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--gray-800);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a73e8 0%, #174ea6 100%);
+            color: white;
+            padding: 32px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIxMDAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiIGlkPSJhIj48c3RvcCBzdG9wLWNvbG9yPSIjRkZGIiBzdG9wLW9wYWNpdHk9Ii4wNSIgb2Zmc2V0PSIwJSIvPjxzdG9wIHN0b3AtY29sb3I9IiNGRkYiIHN0b3Atb3BhY2l0eT0iLjAyIiBvZmZzZXQ9IjEwMCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBkPSJNMTQ0MCAyMDBjLTEzMS44LTEyLjktMjY3LjgtMTkuNC00MDgtMTkuNC0xNDAuMiAwLTI3Ni4yIDYuNS00MDggMTkuNFYwaDgxNnYyMDB6IiBmaWxsPSJ1cmwoI2EpIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .navigation {
+            background-color: var(--gray-100);
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-300);
+            margin-bottom: 32px;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link {
+            color: var(--gray-600);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--gray-900);
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        h3 {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+        }
+        
+        h4 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .dashboard-section {
+            background-color: var(--section-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            padding: 28px;
+            margin-bottom: 32px;
+            transition: var(--transition);
+            border: 1px solid var(--gray-300);
+        }
+        
+        .dashboard-section:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .dashboard-section h2 {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--gray-200);
+            padding-bottom: 16px;
+            margin-bottom: 28px;
+            color: var(--gray-900);
+            font-size: 1.5rem;
+        }
+        
+        .dashboard-section h2 i {
+            margin-right: 12px;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        
+        .insight-summary {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            position: relative;
+        }
+        
+        .insight-summary::before {
+            content: '\f0eb';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 1.5rem;
+            color: var(--primary);
+            opacity: 0.2;
+        }
+        
+        .insight-summary h3 {
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .insight-summary h3 i {
+            margin-right: 10px;
+        }
+        
+        .insight-summary p {
+            margin: 0;
+            color: var(--gray-800);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .data-source-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .data-source-card {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-source-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .data-source-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .data-source-card:hover::before {
+            opacity: 1;
+        }
+        
+        .data-source-card h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .data-source-card h4 i {
+            margin-right: 8px;
+        }
+        
+        .data-source-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .meta-label {
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+        
+        .meta-value {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+        
+        .methodology-steps {
+            counter-reset: step-counter;
+        }
+        
+        .methodology-step {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--primary);
+            position: relative;
+            counter-increment: step-counter;
+        }
+        
+        .methodology-step::before {
+            content: counter(step-counter);
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            background-color: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .methodology-step h4 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            margin-left: 24px;
+        }
+        
+        .methodology-step p {
+            margin-left: 24px;
+            margin-bottom: 0;
+        }
+        
+        .attribute-mapping {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 16px 0;
+        }
+        
+        .theme-group {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-300);
+            padding-bottom: 16px;
+        }
+        
+        .theme-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .theme-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .theme-title i {
+            margin-right: 8px;
+        }
+        
+        .attribute-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 8px;
+            margin-left: 24px;
+        }
+        
+        .attribute-item {
+            background-color: var(--gray-200);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: var(--gray-700);
+        }
+        
+        .formula-box {
+            background-color: var(--gray-200);
+            border: 1px solid var(--gray-400);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 16px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .formula-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 32px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-section h3 {
+            color: white;
+            margin-bottom: 16px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: white;
+            color: var(--primary);
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 16px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .data-source-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+            
+            .container {
+                padding: 0 16px;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+                margin-bottom: 24px;
+            }
+            
+            .methodology-step {
+                padding: 20px;
+            }
+            
+            .methodology-step h4,
+            .methodology-step p {
+                margin-left: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-section h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
+                <a href="https://studiorns.github.io/KPI-Tracker-Repository/" style="text-decoration: none; color: inherit;">
+                    <div class="soner-logo">
+                        S<div class="soner-radar">
+                            <div class="soner-scanner"></div>
+                            <div class="soner-blip"></div>
+                            <div class="soner-blip"></div>
+                        </div>NER
+                        <span class="soner-tagline">Visual Intelligence</span>
+                    </div>
+                </a>
+            </div>
+            <h1>Perception vs Reality Analysis</h1>
+            <p>Understanding the gap between potential visitor perceptions and actual visitor experiences in Abu Dhabi</p>
+        </div>
+    </header>
+    
+    <nav class="navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="methodology.html" class="nav-link active">
+                    <i class="fas fa-microscope"></i>
+                    Methodology
+                </a>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-chart-radar"></i>
+                    Results Dashboard
+                </a>
+                <a href="insights.html" class="nav-link">
+                    <i class="fas fa-lightbulb"></i>
+                    Strategic Insights
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="dashboard-section">
+            <h2><i class="fas fa-info-circle"></i> Research Context</h2>
+            
+            <div class="insight-summary">
+                <h3><i class="fas fa-lightbulb"></i> Study Objective</h3>
+                <p>This analysis compares the perceptions of potential visitors to Abu Dhabi with the actual experiences of visitors who have been to the destination. By identifying gaps between perception and reality, we can understand where communication strategies should focus to better align expectations with the authentic Abu Dhabi experience.</p>
+            </div>
+            
+            <p>The Department of Culture and Tourism - Abu Dhabi conducts multiple research studies to understand both visitor experiences and market perceptions. This analysis brings together data from two key research programs:</p>
+            
+            <ul style="margin-left: 24px; margin-bottom: 24px; color: var(--gray-700);">
+                <li><strong>Domestic Visitor Survey (DVS):</strong> Captures the reality of what actual visitors experience and remember about Abu Dhabi</li>
+                <li><strong>Market Playbook Studies:</strong> Reveals the perceptions, barriers, and associations that potential visitors have about Abu Dhabi</li>
+            </ul>
+            
+            <p>Understanding these gaps is crucial for developing targeted marketing and communication strategies that can bridge the perception-reality divide and attract more visitors to Abu Dhabi.</p>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-database"></i> Data Sources</h2>
+            
+            <div class="data-source-grid">
+                <div class="data-source-card">
+                    <h4><i class="fas fa-users"></i> Domestic Visitor Survey (DVS)</h4>
+                    <div class="data-source-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Study Type:</span>
+                            <span class="meta-value">Post-visit Experience</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Sample:</span>
+                            <span class="meta-value">Actual Visitors</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Markets:</span>
+                            <span class="meta-value">22 Source Markets</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Data Period:</span>
+                            <span class="meta-value">Annual 2024</span>
+                        </div>
+                    </div>
+                    <p><strong>Reality Data:</strong> Captures what visitors actually experienced, what they would recommend Abu Dhabi for, and what comes to mind when they think of the destination.</p>
+                </div>
+                
+                <div class="data-source-card">
+                    <h4><i class="fas fa-globe"></i> Market Playbook Studies</h4>
+                    <div class="data-source-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Study Type:</span>
+                            <span class="meta-value">Pre-visit Perception</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Sample:</span>
+                            <span class="meta-value">Potential Visitors</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Markets:</span>
+                            <span class="meta-value">24+ Key Markets</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Data Period:</span>
+                            <span class="meta-value">2025</span>
+                        </div>
+                    </div>
+                    <p><strong>Perception Data:</strong> Reveals barriers to visiting, perceived strengths, areas for improvement, and associations with Abu Dhabi among potential visitors.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-cogs"></i> Methodology</h2>
+            
+            <div class="methodology-steps">
+                <div class="methodology-step">
+                    <h4>Data Collection & Consolidation</h4>
+                    <p>We gathered data from five distinct sources: DVS reasons for recommendation, DVS top-of-mind associations, Market Playbook barriers to travel, Market Playbook strengths (BLOOM quadrant), and Market Playbook areas for improvement (SEED quadrant). Each source provides a different perspective on the Abu Dhabi tourism experience.</p>
+                </div>
+                
+                <div class="methodology-step">
+                    <h4>Thematic Grouping</h4>
+                    <p>Over 100 individual attributes were consolidated into 8 strategic themes to enable meaningful comparison. This grouping was based on conceptual similarity and strategic relevance to tourism marketing.</p>
+                </div>
+                
+                <div class="methodology-step">
+                    <h4>Data Normalization</h4>
+                    <p>Different data sources used different scales (percentages, frequencies, quadrant positions). All data was normalized to a 0-100 scale to enable fair comparison across sources.</p>
+                </div>
+                
+                <div class="methodology-step">
+                    <h4>Market Aggregation</h4>
+                    <p>Data from all markets was aggregated using equal weighting to provide a consolidated global view of perception vs reality gaps.</p>
+                </div>
+                
+                <div class="methodology-step">
+                    <h4>Gap Analysis</h4>
+                    <p>Perception vs reality gaps were calculated by comparing normalized scores across the five data sources, identifying where perceptions differ significantly from actual visitor experiences.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-sitemap"></i> Thematic Framework</h2>
+            
+            <div class="insight-summary">
+                <h3><i class="fas fa-layer-group"></i> Eight Strategic Themes</h3>
+                <p>All attributes from both reality and perception data were mapped into eight strategic themes that represent key dimensions of the tourism experience. This framework enables clear comparison and actionable insights.</p>
+            </div>
+            
+            <div class="attribute-mapping">
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Safety & Security
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Is a safe destination</div>
+                        <div class="attribute-item">Safe place</div>
+                        <div class="attribute-item">Discrimination/prejudice concerns</div>
+                        <div class="attribute-item">Political unrest</div>
+                        <div class="attribute-item">Terrorist threats</div>
+                        <div class="attribute-item">High crime rate</div>
+                    </div>
+                </div>
+                
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-mosque"></i>
+                        Cultural Heritage & Attractions
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Grand Mosque</div>
+                        <div class="attribute-item">Is a place of culture</div>
+                        <div class="attribute-item">Arabian traditions/culture</div>
+                        <div class="attribute-item">Museums</div>
+                        <div class="attribute-item">Diverse museums & historical sites</div>
+                        <div class="attribute-item">Cultural events & festivals</div>
+                    </div>
+                </div>
+                
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-gamepad"></i>
+                        Modern Entertainment & Activities
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Yas Island</div>
+                        <div class="attribute-item">Ferrari World</div>
+                        <div class="attribute-item">Warner Bros</div>
+                        <div class="attribute-item">Amazing theme parks</div>
+                        <div class="attribute-item">Holiday activities (festivals, theme parks)</div>
+                        <div class="attribute-item">Limited entertainment options</div>
+                    </div>
+                </div>
+                
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-dollar-sign"></i>
+                        Cost & Value Perception
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Good value for money</div>
+                        <div class="attribute-item">It is affordable</div>
+                        <div class="attribute-item">High cost of travel/accommodation</div>
+                        <div class="attribute-item">High cost of visiting</div>
+                        <div class="attribute-item">Accommodation for all budgets</div>
+                    </div>
+                </div>
+                
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-heart"></i>
+                        Cultural Openness & Tolerance
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Open and tolerant to visitors</div>
+                        <div class="attribute-item">Welcoming people</div>
+                        <div class="attribute-item">Cultural restrictions (alcohol/clothing)</div>
+                        <div class="attribute-item">Conservative destination</div>
+                        <div class="attribute-item">It makes me feel welcomed</div>
+                    </div>
+                </div>
+                
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-plane"></i>
+                        Infrastructure & Accessibility
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Modern city</div>
+                        <div class="attribute-item">Great infrastructure</div>
+                        <div class="attribute-item">Well-connected airport</div>
+                        <div class="attribute-item">Limited transportation</div>
+                        <div class="attribute-item">No direct flights</div>
+                        <div class="attribute-item">Poor infrastructure</div>
+                    </div>
+                </div>
+                
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-water"></i>
+                        Natural Beauty & Environment
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Amazing beaches</div>
+                        <div class="attribute-item">Beautiful city</div>
+                        <div class="attribute-item">Great weather (winter)</div>
+                        <div class="attribute-item">Weather concerns</div>
+                        <div class="attribute-item">Environmental concerns</div>
+                        <div class="attribute-item">Beautiful mangroves</div>
+                    </div>
+                </div>
+                
+                <div class="theme-group">
+                    <div class="theme-title">
+                        <i class="fas fa-gem"></i>
+                        Luxury & Premium Experiences
+                    </div>
+                    <div class="attribute-list">
+                        <div class="attribute-item">Luxury</div>
+                        <div class="attribute-item">Amazing hotels</div>
+                        <div class="attribute-item">Highly luxurious experiences</div>
+                        <div class="attribute-item">Rich city</div>
+                        <div class="attribute-item">Great architecture</div>
+                        <div class="attribute-item">Emirates Palace</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-calculator"></i> Scoring Methodology</h2>
+            
+            <div class="insight-summary">
+                <h3><i class="fas fa-chart-line"></i> Normalization Process</h3>
+                <p>To enable fair comparison across different data types and scales, all data was normalized to a 0-100 scale using standardized formulas for each data source type.</p>
+            </div>
+            
+            <div class="formula-box">
+                <div class="formula-title">Reality Score Calculation (DVS Data)</div>
+                <strong>Recommendation Score:</strong> Average percentage across all markets<br>
+                <strong>Top-of-Mind Score:</strong> (Frequency / Max Frequency) × 100<br>
+                <strong>Combined Reality Score:</strong> (Recommendation Score + TOM Score) / 2
+            </div>
+            
+            <div class="formula-box">
+                <div class="formula-title">Perception Score Calculation (Market Playbook)</div>
+                <strong>Barrier Score:</strong> 100 - Average barrier percentage (inverted)<br>
+                <strong>Strength Score (BLOOM):</strong> Frequency of appearance in BLOOM quadrants<br>
+                <strong>Gap Score (SEED):</strong> 100 - Frequency in SEED quadrants (inverted)<br>
+                <strong>Combined Perception Score:</strong> (Barrier Score + Strength Score + Gap Score) / 3
+            </div>
+            
+            <div class="formula-box">
+                <div class="formula-title">Gap Analysis</div>
+                <strong>Perception vs Reality Gap:</strong> Reality Score - Perception Score<br>
+                <strong>Positive Gap:</strong> Reality exceeds perception (opportunity)<br>
+                <strong>Negative Gap:</strong> Perception barriers despite reality (myth-busting needed)
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-exclamation-triangle"></i> Limitations & Considerations</h2>
+            
+            <div class="methodology-steps">
+                <div class="methodology-step">
+                    <h4>Data Collection Differences</h4>
+                    <p>DVS data represents post-visit experiences while Market Playbook captures pre-visit perceptions. These different methodologies may introduce some variance in how attributes are measured and interpreted.</p>
+                </div>
+                
+                <div class="methodology-step">
+                    <h4>Market Aggregation</h4>
+                    <p>Equal weighting was applied across all markets. In practice, some markets may be more strategically important than others, which could affect the interpretation of consolidated results.</p>
+                </div>
+                
+                <div class="methodology-step">
+                    <h4>Temporal Considerations</h4>
+                    <p>Data was collected across different time periods (2024-2025). Market conditions, global events, and seasonal factors may influence perceptions and should be considered when interpreting results.</p>
+                </div>
+                
+                <div class="methodology-step">
+                    <h4>Thematic Grouping</h4>
+                    <p>The consolidation of attributes into themes involves subjective judgment. Alternative groupings might yield different insights, and some nuances may be lost in the aggregation process.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <h3>Ready to Explore the Results?</h3>
+            <p>Now that you understand our methodology, explore the interactive spider chart to see where Abu Dhabi's reality differs from market perceptions.</p>
+            <a href="index.html" class="cta-button">
+                <i class="fas fa-chart-radar"></i>
+                View Results Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <footer style="background-color: var(--gray-100); color: var(--gray-700); padding: 20px 0; text-align: center; border-top: 1px solid var(--gray-300); margin-top: 40px;">
+        <div class="container">
+            <p>© 2025 Research & Insights Unit | Strategic Marketing & Communications | Department of Culture and Tourism – Abu Dhabi</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Insights & Recommendations - Perception vs Reality Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* SONER Logo Animation */
+        @keyframes sonerScan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes sonerBlip { 0%, 20%, 100% { opacity: 0; } 2%, 15% { opacity: 1; } 3% { transform: scale(1.2); } }
+        
+        /* SONER Logo styles */
+        .soner-logo { display: flex; align-items: center; color: white; font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 300; }
+        .soner-radar { width: 24px; height: 24px; border-radius: 50%; border: 1px solid white; margin: 0 3px; position: relative; background-color: rgba(255, 255, 255, 0.05); overflow: hidden; }
+        .soner-scanner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; animation: sonerScan 4s linear infinite; transform-origin: center; }
+        .soner-scanner::before { content: ''; position: absolute; top: 0; left: 50%; width: 50%; height: 50%; background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.4)); transform-origin: bottom left; clip-path: polygon(0 0, 100% 0, 0 100%); }
+        .soner-scanner::after { content: ''; position: absolute; top: 0; left: 50%; width: 50%; height: 1px; background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 1)); transform-origin: left center; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); }
+        .soner-blip { position: absolute; width: 2px; height: 2px; background-color: white; border-radius: 50%; opacity: 0; box-shadow: 0 0 4px white; }
+        .soner-blip:nth-child(1) { top: 25%; left: 30%; animation: sonerBlip 4s 1s infinite; }
+        .soner-blip:nth-child(2) { top: 65%; left: 60%; animation: sonerBlip 4s 2.5s infinite; }
+        .soner-tagline { color: white; font-size: 8px; text-transform: uppercase; font-weight: 500; letter-spacing: 0.5em; margin-left: 10px; opacity: 0.8; }
+
+        :root {
+            --primary: #4285f4;
+            --primary-light: #1a2233;
+            --primary-dark: #8ab4f8;
+            --secondary: #34a853;
+            --secondary-light: #1a2a1e;
+            --warning: #fbbc04;
+            --warning-light: #332a1a;
+            --danger: #ea4335;
+            --danger-light: #331f1e;
+            --gray-100: #1e1e1e;
+            --gray-200: #2d2d2d;
+            --gray-300: #3d3d3d;
+            --gray-400: #4d4d4d;
+            --gray-500: #777777;
+            --gray-600: #a0a0a0;
+            --gray-700: #c0c0c0;
+            --gray-800: #e0e0e0;
+            --gray-900: #f0f0f0;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 15px 25px rgba(0, 0, 0, 0.6);
+            --radius-sm: 4px;
+            --radius: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s ease;
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --section-bg: #181818;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--gray-800);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a73e8 0%, #174ea6 100%);
+            color: white;
+            padding: 32px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI0MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIxMDAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiIGlkPSJhIj48c3RvcCBzdG9wLWNvbG9yPSIjRkZGIiBzdG9wLW9wYWNpdHk9Ii4wNSIgb2Zmc2V0PSIwJSIvPjxzdG9wIHN0b3AtY29sb3I9IiNGRkYiIHN0b3Atb3BhY2l0eT0iLjAyIiBvZmZzZXQ9IjEwMCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cGF0aCBkPSJNMTQ0MCAyMDBjLTEzMS44LTEyLjktMjY3LjgtMTkuNC00MDgtMTkuNC0xNDAuMiAwLTI3Ni4yIDYuNS00MDggMTkuNFYwaDgxNnYyMDB6IiBmaWxsPSJ1cmwoI2EpIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .navigation {
+            background-color: var(--gray-100);
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gray-300);
+            margin-bottom: 32px;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link {
+            color: var(--gray-600);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--gray-900);
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        h3 {
+            font-size: 1.35rem;
+            margin-bottom: 1rem;
+        }
+        
+        h4 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul {
+            margin-bottom: 1rem;
+            padding-left: 24px;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .dashboard-section {
+            background-color: var(--section-bg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            padding: 28px;
+            margin-bottom: 32px;
+            transition: var(--transition);
+            border: 1px solid var(--gray-300);
+        }
+        
+        .dashboard-section:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        .dashboard-section h2 {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--gray-200);
+            padding-bottom: 16px;
+            margin-bottom: 28px;
+            color: var(--gray-900);
+            font-size: 1.5rem;
+        }
+        
+        .dashboard-section h2 i {
+            margin-right: 12px;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        
+        .executive-summary {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--gray-200) 100%);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            margin-bottom: 32px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            position: relative;
+        }
+        
+        .executive-summary::before {
+            content: '\f0c5';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 2rem;
+            color: var(--primary);
+            opacity: 0.2;
+        }
+        
+        .executive-summary h3 {
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .executive-summary h3 i {
+            margin-right: 12px;
+        }
+        
+        .priority-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .priority-card {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .priority-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            transition: var(--transition);
+        }
+        
+        .priority-card.priority-1::before {
+            background-color: var(--danger);
+        }
+        
+        .priority-card.priority-2::before {
+            background-color: var(--warning);
+        }
+        
+        .priority-card.priority-3::before {
+            background-color: var(--secondary);
+        }
+        
+        .priority-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .priority-card h4 {
+            color: var(--gray-900);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .priority-card h4 i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .priority-1 .priority-badge {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .priority-2 .priority-badge {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .priority-3 .priority-badge {
+            background-color: var(--secondary-light);
+            color: var(--secondary);
+        }
+        
+        .theme-analysis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .theme-card {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .theme-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .theme-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .theme-title {
+            display: flex;
+            align-items: center;
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+        
+        .theme-title i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        .gap-score {
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+        }
+        
+        .gap-positive {
+            background-color: var(--secondary-light);
+            color: var(--secondary);
+        }
+        
+        .gap-negative {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+        
+        .gap-neutral {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+        
+        .scores-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            color: var(--gray-600);
+            font-size: 0.8rem;
+        }
+        
+        .score-value {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+        
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .recommendation-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-300);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .recommendation-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .recommendation-list li i {
+            color: var(--primary);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .kpi-card {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+        }
+        
+        .kpi-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .kpi-metric {
+            color: var(--gray-900);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            .priority-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .theme-analysis {
+                grid-template-columns: 1fr;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+            
+            .container {
+                padding: 0 16px;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+                margin-bottom: 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-section h2 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+            }
+            
+            .dashboard-section {
+                box-shadow: none;
+                break-inside: avoid;
+                border: 1px solid #ccc;
+            }
+            
+            .navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
+                <a href="https://studiorns.github.io/KPI-Tracker-Repository/" style="text-decoration: none; color: inherit;">
+                    <div class="soner-logo">
+                        S<div class="soner-radar">
+                            <div class="soner-scanner"></div>
+                            <div class="soner-blip"></div>
+                            <div class="soner-blip"></div>
+                        </div>NER
+                        <span class="soner-tagline">Visual Intelligence</span>
+                    </div>
+                </a>
+            </div>
+            <h1>Strategic Insights & Recommendations</h1>
+            <p>Actionable intelligence from Abu Dhabi's perception vs reality analysis</p>
+        </div>
+    </header>
+    
+    <nav class="navigation">
+        <div class="container">
+            <div class="nav-links">
+                <a href="methodology.html" class="nav-link">
+                    <i class="fas fa-microscope"></i>
+                    Methodology
+                </a>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-chart-radar"></i>
+                    Results Dashboard
+                </a>
+                <a href="insights.html" class="nav-link active">
+                    <i class="fas fa-lightbulb"></i>
+                    Strategic Insights
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="executive-summary">
+            <h3><i class="fas fa-chart-line"></i> Executive Summary</h3>
+            <p><strong>Abu Dhabi faces a unique positioning challenge:</strong> In most tourism themes, market perceptions actually exceed visitor reality, creating expectation gaps that risk visitor disappointment. The analysis reveals that Abu Dhabi has built strong brand awareness and positive perceptions, but needs to enhance actual visitor experiences to match these elevated expectations.</p>
+            
+            <p><strong>Key Finding:</strong> Cost & Value Perception shows the largest gap (-42 points), where visitors expect better value (54/100) than they actually experience (12/100). This represents the highest priority area for strategic intervention.</p>
+            
+            <p><strong>Strategic Opportunity:</strong> Abu Dhabi's strongest reality asset is Safety & Security (68/100), which aligns well with perceptions (58/100). This provides a solid foundation for building authentic experiences in other areas.</p>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-bullhorn"></i> Market Communication Strategy</h2>
+            
+            <div class="priority-grid">
+                <div class="priority-card priority-1">
+                    <h4><i class="fas fa-exclamation-circle"></i> Myths to Address</h4>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-times-circle"></i> "Abu Dhabi is too expensive" - Reality shows poor value perception</li>
+                        <li><i class="fas fa-times-circle"></i> "Limited entertainment options" - Gap between perception and offerings</li>
+                        <li><i class="fas fa-times-circle"></i> "Not environmentally friendly" - Natural beauty underperformed</li>
+                        <li><i class="fas fa-times-circle"></i> "Exclusive luxury only" - Need accessible options messaging</li>
+                    </ul>
+                </div>
+                
+                <div class="priority-card priority-2">
+                    <h4><i class="fas fa-star"></i> Strengths to Amplify</h4>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-check-circle"></i> Safety & Security leadership position</li>
+                        <li><i class="fas fa-check-circle"></i> Cultural heritage and iconic attractions</li>
+                        <li><i class="fas fa-check-circle"></i> Modern infrastructure and accessibility</li>
+                        <li><i class="fas fa-check-circle"></i> Grand Mosque as signature experience</li>
+                    </ul>
+                </div>
+                
+                <div class="priority-card priority-3">
+                    <h4><i class="fas fa-target"></i> Content Strategy Focus</h4>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-arrow-right"></i> Value-focused content showcasing affordable experiences</li>
+                        <li><i class="fas fa-arrow-right"></i> Behind-the-scenes luxury service stories</li>
+                        <li><i class="fas fa-arrow-right"></i> Environmental sustainability initiatives</li>
+                        <li><i class="fas fa-arrow-right"></i> Cultural openness and diversity testimonials</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-chart-line"></i> Performance Monitoring Framework</h2>
+            
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-title">Cost & Value Perception</div>
+                    <div class="kpi-metric">Target: Increase reality score from 12 to 25 within 12 months</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-title">Luxury Experience Delivery</div>
+                    <div class="kpi-metric">Target: Increase reality score from 41 to 55 within 18 months</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-title">Natural Beauty & Environment</div>
+                    <div class="kpi-metric">Target: Increase reality score from 37 to 50 within 24 months</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-title">Overall Gap Reduction</div>
+                    <div class="kpi-metric">Target: Reduce average gap from -18 to -10 points</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-title">Visitor Satisfaction</div>
+                    <div class="kpi-metric">Monitor: DVS recommendation rates by theme</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-title">Brand Perception Tracking</div>
+                    <div class="kpi-metric">Monitor: Market Playbook perception scores quarterly</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-road"></i> Implementation Roadmap</h2>
+            
+            <div class="priority-grid">
+                <div class="priority-card priority-1">
+                    <div class="priority-badge">Q1-Q2 2025</div>
+                    <h4><i class="fas fa-rocket"></i> Immediate Actions</h4>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-calendar-check"></i> Launch "Abu Dhabi Value" campaign</li>
+                        <li><i class="fas fa-calendar-check"></i> Develop budget accommodation packages</li>
+                        <li><i class="fas fa-calendar-check"></i> Implement dynamic pricing for attractions</li>
+                        <li><i class="fas fa-calendar-check"></i> Enhance luxury service training programs</li>
+                    </ul>
+                </div>
+                
+                <div class="priority-card priority-2">
+                    <div class="priority-badge">Q3-Q4 2025</div>
+                    <h4><i class="fas fa-cogs"></i> Medium-term Initiatives</h4>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-calendar-check"></i> Develop new eco-tourism experiences</li>
+                        <li><i class="fas fa-calendar-check"></i> Enhance beach facilities and accessibility</li>
+                        <li><i class="fas fa-calendar-check"></i> Create exclusive luxury experiences</li>
+                        <li><i class="fas fa-calendar-check"></i> Launch cultural diversity campaigns</li>
+                    </ul>
+                </div>
+                
+                <div class="priority-card priority-3">
+                    <div class="priority-badge">2026 & Beyond</div>
+                    <h4><i class="fas fa-flag"></i> Long-term Vision</h4>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-calendar-check"></i> Establish Abu Dhabi as value-luxury destination</li>
+                        <li><i class="fas fa-calendar-check"></i> Achieve perception-reality alignment across all themes</li>
+                        <li><i class="fas fa-calendar-check"></i> Position as culturally open and inclusive destination</li>
+                        <li><i class="fas fa-calendar-check"></i> Maintain safety & security leadership position</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <h2><i class="fas fa-key"></i> Key Success Factors</h2>
+            
+            <div class="theme-analysis">
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <i class="fas fa-users"></i>
+                            Stakeholder Alignment
+                        </div>
+                    </div>
+                    <p><strong>Critical:</strong> Ensure all tourism stakeholders understand and commit to closing perception-reality gaps.</p>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-handshake"></i> Hotel and hospitality partners</li>
+                        <li><i class="fas fa-handshake"></i> Attraction operators and entertainment venues</li>
+                        <li><i class="fas fa-handshake"></i> Transportation and infrastructure providers</li>
+                        <li><i class="fas fa-handshake"></i> Cultural institutions and heritage sites</li>
+                    </ul>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Continuous Measurement
+                        </div>
+                    </div>
+                    <p><strong>Essential:</strong> Regular monitoring of both perception and reality metrics to track progress.</p>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-chart-line"></i> Quarterly DVS reality tracking</li>
+                        <li><i class="fas fa-chart-line"></i> Quarterly Brand Health Tracker studies</li>
+                        <li><i class="fas fa-chart-line"></i> Quarterly visitor satisfaction monitoring (DVS)</li>
+                        <li><i class="fas fa-chart-line"></i> Real-time social media sentiment analysis (Sprinklr)</li>
+                    </ul>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <i class="fas fa-balance-scale"></i>
+                            Balanced Approach
+                        </div>
+                    </div>
+                    <p><strong>Strategic:</strong> Balance improving reality with managing perceptions to avoid over-promising.</p>
+                    <ul class="recommendation-list">
+                        <li><i class="fas fa-balance-scale"></i> Enhance experiences before amplifying marketing</li>
+                        <li><i class="fas fa-balance-scale"></i> Set realistic expectations in communications</li>
+                        <li><i class="fas fa-balance-scale"></i> Focus on authentic storytelling</li>
+                        <li><i class="fas fa-balance-scale"></i> Leverage strengths while addressing weaknesses</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer style="background-color: var(--gray-100); color: var(--gray-700); padding: 20px 0; text-align: center; border-top: 1px solid var(--gray-300); margin-top: 40px;">
+        <div class="container">
+            <p>© 2025 Research & Insights Unit | Strategic Marketing & Communications | Department of Culture and Tourism – Abu Dhabi</p>
+        </div>
+    </footer>
+</body>
+</html>
